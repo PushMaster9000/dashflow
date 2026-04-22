@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | DashFlow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-color) 0%, var(--sidebar-bg) 100%);
+        }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 3rem 2rem;
+            background-color: var(--widget-bg);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            animation: fadeIn 0.6s ease-out;
+        }
+        .login-container .logo {
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .login-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            font-size: 0.95rem;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo">
+            <i class="fa-solid fa-bolt"></i>
+            <span class="logo-text">DashFlow</span>
+        </div>
+        <p class="login-subtitle">Welcome back to your workspace</p>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter 'admin'" required pattern="[A-Za-z]+" title="Username can only contain letters">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter 'admin123'" required>
+            </div>
+            <div id="login-error" class="error-msg" style="text-align: center; margin-bottom: 1rem;"></div>
+            <button type="submit" class="btn btn-primary login-btn">Sign In</button>
+            <p style="margin-top: 1.5rem; color: var(--text-secondary); text-align: center; font-size: 0.9rem;">
+                Don't have an account? <a href="signup.html" style="color: var(--primary-color); text-decoration: none; font-weight: 500;">Sign up</a>
+            </p>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#login-form').submit(function(e) {
+                e.preventDefault();
+                
+                const username = $('#username').val();
+                const password = $('#password').val();
+                const $error = $('#login-error');
+                
+                $error.text('');
+                
+                // AJAX call to PHP (Exp 9)
+                $.ajax({
+                    url: 'api/login.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { username: username, password: password },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            // Save username in localStorage to greet them on dashboard
+                            localStorage.setItem('dashflow_user', username);
+                            window.location.href = 'index.html';
+                        } else {
+                            $error.text(response.message);
+                        }
+                    },
+                    error: function() {
+                        // If backend isn't running, fallback to simple client check for demonstration
+                        if (username === 'admin' && password === 'admin123') {
+                            localStorage.setItem('dashflow_user', username);
+                            window.location.href = 'index.html';
+                        } else {
+                            $error.text("Invalid credentials (Fallback Mode). Use admin / admin123");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

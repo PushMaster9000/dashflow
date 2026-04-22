@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DashFlow | Professional Workspace</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Added Chart.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fa-solid fa-bolt"></i>
+                <span class="logo-text">DashFlow</span>
+            </div>
+            <button id="toggle-sidebar" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-target="tab-greeting"><i class="fa-solid fa-house"></i> <span>Home</span></a>
+            <a href="#" class="nav-item" data-target="tab-analytics"><i class="fa-solid fa-chart-line"></i> <span>Analytics & Habits</span></a>
+            <a href="#" class="nav-item" data-target="tab-weather"><i class="fa-solid fa-cloud-sun"></i> <span>Weather</span></a>
+            <a href="#" class="nav-item" data-target="tab-tasks"><i class="fa-solid fa-check-double"></i> <span>Tasks & Timer</span></a>
+            <a href="#" class="nav-item" data-target="tab-notes"><i class="fa-regular fa-note-sticky"></i> <span>Notes</span></a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button id="theme-toggle" class="nav-item no-border"><i class="fa-solid fa-moon"></i> <span>Dark Mode</span></button>
+            <a href="login.html" class="nav-item" style="margin-top: 10px; color: var(--color-red);"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span></a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-actions" style="margin-left: auto;">
+                <button class="icon-btn tooltip" data-tooltip="AI Assistant"><i class="fa-solid fa-sparkles"></i></button>
+                
+                <div class="notification-wrapper">
+                    <div id="profile-btn" class="profile-pic" style="cursor: pointer;">
+                        <img id="profile-picture" src="https://ui-avatars.com/api/?name=Admin&background=4f46e5&color=fff" alt="Profile">
+                    </div>
+                    <!-- Profile Dropdown -->
+                    <div id="profile-dropdown" class="dropdown-menu hidden" style="width: 200px;">
+                        <div class="dropdown-header">My Profile</div>
+                        <div class="dropdown-item" style="cursor: pointer;"><i class="fa-solid fa-user"></i> Account Settings</div>
+                        <div class="dropdown-item" style="cursor: pointer;"><i class="fa-solid fa-sliders"></i> Preferences</div>
+                        <div class="dropdown-item" onclick="window.location.href='login.html'" style="color: var(--color-red); border-top: 1px solid var(--border-color); margin-top: 5px; padding-top: 10px; cursor: pointer;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Area -->
+        <div class="dashboard-content">
+            
+            <!-- 1. GREETING TAB (Default) -->
+            <section id="tab-greeting" class="tab-pane active-tab">
+                <div class="greeting-container">
+                    <h1 id="dynamic-greeting">Welcome back.</h1>
+                    <p class="greeting-question">How do you want to manage your day today?</p>
+                    
+                    <div class="quote-card">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p id="daily-quote" class="quote-text">Loading inspiration...</p>
+                        <p id="quote-author" class="quote-author"></p>
+                    </div>
+
+                    <div class="grid-2-col" style="text-align: left; margin-top: 3rem;">
+                        <!-- Quick Reminder Widget -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3>Set a Quick Reminder</h3>
+                                <i class="fa-regular fa-clock text-primary"></i>
+                            </div>
+                            <form id="reminder-form" class="inline-form" style="flex-direction: column; gap: 1rem;">
+                                <input type="text" id="reminder-msg" placeholder="What to remind you about?" required>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="time" id="reminder-time" required style="flex: 1;">
+                                    <button type="submit" class="btn btn-primary">Set</button>
+                                </div>
+                            </form>
+                            <div id="active-reminders" class="text-secondary" style="font-size: 0.85rem; margin-top: 1rem;">
+                                No active reminders today.
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Actions -->
+                        <div class="widget" style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1rem;">
+                            <h3>Shortcuts</h3>
+                            <button class="btn btn-primary" onclick="$('[data-target=\'tab-tasks\']').click()" style="width: 80%;">Jump to Tasks</button>
+                            <button class="btn btn-outline" onclick="$('[data-target=\'tab-notes\']').click()" style="width: 80%;">Write a Note</button>
+                            <button class="btn btn-outline" onclick="$('[data-target=\'tab-analytics\']').click()" style="width: 80%;">View Habits</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. ANALYTICS & HABITS TAB -->
+            <section id="tab-analytics" class="tab-pane">
+                <div class="grid-2-col">
+                    <!-- Productivity Graph -->
+                    <div class="widget span-2">
+                        <div class="widget-header">
+                            <h3>Productivity Graph (Last 7 Days)</h3>
+                            <i class="fa-solid fa-chart-area text-primary"></i>
+                        </div>
+                        <div class="chart-container" style="position: relative; height:300px; width:100%">
+                            <canvas id="productivityChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Habit Tracker -->
+                    <div class="widget span-2">
+                        <div class="widget-header">
+                            <h3>Habit Tracker</h3>
+                            <button id="add-habit-btn" class="btn-small"><i class="fa-solid fa-plus"></i> New Habit</button>
+                        </div>
+                        <div class="habit-list">
+                            <!-- Habit Items (Rendered via JS) -->
+                            <div class="habit-item">
+                                <div class="habit-info">
+                                    <h4>Read 20 pages</h4>
+                                    <span class="streak"><i class="fa-solid fa-fire text-orange"></i> 12 Day Streak</span>
+                                </div>
+                                <div class="habit-days">
+                                    <div class="day-box checked tooltip" data-tooltip="Mon"></div>
+                                    <div class="day-box checked tooltip" data-tooltip="Tue"></div>
+                                    <div class="day-box checked tooltip" data-tooltip="Wed"></div>
+                                    <div class="day-box checked tooltip" data-tooltip="Thu"></div>
+                                    <div class="day-box checked tooltip" data-tooltip="Fri"></div>
+                                    <div class="day-box tooltip" data-tooltip="Sat"></div>
+                                    <div class="day-box tooltip" data-tooltip="Sun"></div>
+                                </div>
+                            </div>
+                            <div class="habit-item">
+                                <div class="habit-info">
+                                    <h4>Drink 2L Water</h4>
+                                    <span class="streak"><i class="fa-solid fa-fire text-orange"></i> 5 Day Streak</span>
+                                </div>
+                                <div class="habit-days">
+                                    <div class="day-box checked tooltip" data-tooltip="Mon"></div>
+                                    <div class="day-box tooltip" data-tooltip="Tue"></div>
+                                    <div class="day-box checked tooltip" data-tooltip="Wed"></div>
+                                    <div class="day-box checked tooltip" data-tooltip="Thu"></div>
+                                    <div class="day-box checked tooltip" data-tooltip="Fri"></div>
+                                    <div class="day-box checked tooltip" data-tooltip="Sat"></div>
+                                    <div class="day-box tooltip" data-tooltip="Sun"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. WEATHER TAB -->
+            <section id="tab-weather" class="tab-pane">
+                <div class="widget weather-widget large-widget">
+                    <div class="widget-header">
+                        <h3>Live Weather Updates</h3>
+                        <i class="fa-solid fa-cloud-sun text-gray"></i>
+                    </div>
+                    <div id="weather-content" class="weather-content-large">
+                        <div class="loader">Fetching data...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. TASKS & TIMER TAB -->
+            <section id="tab-tasks" class="tab-pane">
+                <div class="grid-2-col">
+                    <div class="widget tasks-widget">
+                        <div class="widget-header">
+                            <h3>Tasks & Projects</h3>
+                            <button id="add-task-btn" class="icon-btn"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                        
+                        <form id="task-form" class="inline-form hidden">
+                            <input type="text" id="task-title" placeholder="New task..." required>
+                            <select id="task-priority">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </form>
+                        <div id="task-error" class="error-msg"></div>
+                        <div id="ajax-msg" class="success-msg" style="display:none;"></div>
+
+                        <div id="task-list" class="task-list">
+                            <div class="loader">Loading tasks...</div>
+                        </div>
+                    </div>
+
+                    <div class="widget timer-widget">
+                        <div class="widget-header" style="align-items: center;">
+                            <h3>Focus Timer</h3>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                                <input type="number" id="timer-input" value="25" min="1" max="120" style="width: 55px; padding: 0.2rem 0.5rem; border-radius: 4px; background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--border-color); text-align: center; font-family: inherit;"> min
+                            </div>
+                        </div>
+                        <div class="timer-display">
+                            <h2 id="time-display">25:00</h2>
+                        </div>
+                        <div class="timer-controls">
+                            <button id="start-timer" class="btn btn-primary">Start Focus</button>
+                            <button id="reset-timer" class="btn btn-outline">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. NOTES TAB -->
+            <section id="tab-notes" class="tab-pane">
+                <div class="grid-2-col">
+                    <div class="widget notes-widget">
+                        <div class="widget-header">
+                            <h3>Create Note</h3>
+                        </div>
+                        <form id="note-form" class="note-editor">
+                            <input type="text" id="note-title" class="note-title-input" placeholder="Note Title..." required>
+                            <textarea id="note-content" class="note-textarea" placeholder="Start typing your thoughts here..." required></textarea>
+                            <div class="note-footer">
+                                <span id="note-error" class="error-msg"></span>
+                                <button type="submit" class="btn btn-primary">Save Note</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="widget saved-notes-widget" style="max-height: calc(100vh - 150px); overflow-y: auto;">
+                        <div class="widget-header">
+                            <h3>Saved Notes</h3>
+                        </div>
+                        <div id="notes-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="loader">Loading notes...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Reminder Toast Notification -->
+    <div id="reminder-toast" class="toast hidden">
+        <div class="toast-icon"><i class="fa-solid fa-bell"></i></div>
+        <div class="toast-content">
+            <h4>Reminder!</h4>
+            <p id="toast-msg">Time to review your tasks.</p>
+        </div>
+        <button class="toast-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Habit Modal Wizard -->
+    <div id="habit-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Habit</h3>
+                <button id="close-habit-modal" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="habit-input-name" placeholder="E.g. Drink 2 Liters of Water" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); margin-bottom: 1rem; font-family: inherit;">
+                <button id="save-habit-btn" class="btn btn-primary" style="width: 100%;">Create Habit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/main.js?v=9"></script>
+    <script src="js/forms.js"></script>
+    <script src="js/ajax_handlers.js?v=4"></script>
+    <script src="js/jquery_effects.js?v=2"></script>
+</body>
+</html>

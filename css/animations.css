@@ -1,0 +1,66 @@
+/* css/animations.css */
+/* Requirement: Exp 4 - CSS Animations, Transformations and Transitions */
+
+/* Hover Transformations for Cards/Widgets */
+.widget {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.widget:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.summary-card {
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease;
+}
+
+.summary-card:hover {
+    transform: scale(1.02);
+    background-color: var(--widget-bg);
+}
+
+/* Button transitions */
+.btn, .icon-btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Tooltip animation (Keyframes) */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Simple pulse animation for active timer */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); color: var(--color-orange); }
+    100% { transform: scale(1); }
+}
+
+.timer-active h2 {
+    animation: pulse 2s infinite ease-in-out;
+}
+
+/* Task Item hover effect */
+.task-item {
+    transition: all 0.2s ease;
+}
+.task-item:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Checkbox animation */
+input[type="checkbox"] {
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+input[type="checkbox"]:active {
+    transform: scale(0.8);
+}

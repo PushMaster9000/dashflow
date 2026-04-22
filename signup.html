@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | DashFlow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-color) 0%, var(--sidebar-bg) 100%);
+            min-height: 100vh;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 3rem 2rem;
+            background-color: var(--widget-bg);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            animation: fadeIn 0.6s ease-out;
+        }
+        .login-container .logo {
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .login-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            font-size: 0.95rem;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        .password-strength {
+            height: 5px;
+            background-color: var(--border-color, #333);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease-in-out;
+            background-color: #ef4444;
+        }
+        .strength-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo">
+            <i class="fa-solid fa-bolt"></i>
+            <span class="logo-text">DashFlow</span>
+        </div>
+        <p class="login-subtitle">Create a new workspace account</p>
+        
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Choose a username" required pattern="[A-Za-z]+" title="Username can only contain letters">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required>
+                <div class="password-strength">
+                    <div class="strength-bar" id="strength-bar"></div>
+                </div>
+                <div class="strength-text" id="strength-text">Password strength</div>
+            </div>
+            <div id="signup-error" class="error-msg" style="text-align: center; margin-bottom: 1rem;"></div>
+            <div id="signup-success" class="success-msg" style="text-align: center; margin-bottom: 1rem; color: #10b981; font-size: 0.9rem; display: none;"></div>
+            <button type="submit" class="btn btn-primary login-btn">Sign Up</button>
+            <p style="margin-top: 1.5rem; color: var(--text-secondary); text-align: center; font-size: 0.9rem;">
+                Already have an account? <a href="login.html" style="color: var(--primary-color); text-decoration: none; font-weight: 500;">Sign in</a>
+            </p>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Password strength logic
+            $('#password').on('input', function() {
+                const val = $(this).val();
+                let strength = 0;
+                
+                if (val.length >= 6) strength += 1;
+                if (val.length >= 10) strength += 1;
+                if (/[A-Z]/.test(val)) strength += 1;
+                if (/[0-9]/.test(val)) strength += 1;
+                if (/[^A-Za-z0-9]/.test(val)) strength += 1;
+
+                const $bar = $('#strength-bar');
+                const $text = $('#strength-text');
+
+                if (val.length === 0) {
+                    $bar.css({ width: '0%', backgroundColor: '#ef4444' });
+                    $text.text('Password strength').css('color', 'var(--text-secondary)');
+                } else if (strength <= 1) {
+                    $bar.css({ width: '20%', backgroundColor: '#ef4444' }); // Red
+                    $text.text('Weak').css('color', '#ef4444');
+                } else if (strength === 2 || strength === 3) {
+                    $bar.css({ width: '60%', backgroundColor: '#eab308' }); // Yellow
+                    $text.text('Medium').css('color', '#eab308');
+                } else {
+                    $bar.css({ width: '100%', backgroundColor: '#22c55e' }); // Green
+                    $text.text('Strong').css('color', '#22c55e');
+                }
+            });
+
+            $('#signup-form').submit(function(e) {
+                e.preventDefault();
+                
+                const username = $('#username').val();
+                const password = $('#password').val();
+                const $error = $('#signup-error');
+                const $success = $('#signup-success');
+                
+                $error.text('');
+                $success.hide();
+                
+                $.ajax({
+                    url: 'api/signup.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { username: username, password: password },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $success.text('Account created successfully! Redirecting...').show();
+                            setTimeout(function() {
+                                window.location.href = 'login.html';
+                            }, 1500);
+                        } else {
+                            $error.text(response.message);
+                        }
+                    },
+                    error: function() {
+                        $error.text("An error occurred while trying to register. Please make sure the backend is running.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

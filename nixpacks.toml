@@ -1,8 +1,2 @@
 [phases.setup]
-nixPkgs = ["php83", "php83Extensions.mysqli", "php83Extensions.pdo", "php83Extensions.pdo_mysql", "apacheHttpd"]
-
-[phases.build]
-cmds = []
-
-[start]
-cmd = "httpd -f /app/apache.conf -D FOREGROUND"
+nixPkgs = ["php83", "php83Extensions.mysqli", "php83Extensions.pdo", "php83Extensions.pdo_mysql"]

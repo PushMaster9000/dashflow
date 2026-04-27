@@ -26,6 +26,18 @@ if ($method === 'GET') {
     }
     echo json_encode(["status" => "success", "data" => $notes]);
 } 
+elseif ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (isset($data['id'])) {
+        $id = (int)$data['id'];
+        $sql = "DELETE FROM notes WHERE id = $id AND user_id = $user_id";
+        if ($conn->query($sql) === TRUE) {
+            echo json_encode(["status" => "success", "message" => "Note deleted"]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Delete failed"]);
+        }
+    }
+}
 elseif ($method === 'POST') {
     // Add a new note for the current user
     $data = json_decode(file_get_contents('php://input'), true);

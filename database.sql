@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     status ENUM('todo', 'in_progress', 'done') DEFAULT 'todo',
     priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
     due_date DATE NULL,
+    user_id INT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -30,6 +31,7 @@ CREATE TABLE IF NOT EXISTS notes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
+    user_id INT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

@@ -275,7 +275,12 @@ document.addEventListener('DOMContentLoaded', () => {
                                 output += `
                                     <div class="habit-item" data-id="${habit.id}">
                                         <div class="habit-info">
-                                            <h4>${habit.title}</h4>
+                                            <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                                                <h4>${habit.title}</h4>
+                                                <button class="delete-habit-btn icon-btn" data-id="${habit.id}" style="color: var(--color-red); padding: 5px; opacity: 0.7; transition: 0.3s; margin-left: 10px;">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </div>
                                             <span class="streak"><i class="fa-solid fa-fire text-orange"></i> ${habit.streak || 0} Day Streak</span>
                                         </div>
                                         <div class="habit-days">
@@ -296,7 +301,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         output = '<div class="error-msg text-center">' + res.message + '</div>';
                     }
-                    if (habitList) habitList.innerHTML = output;
+                    if (habitList) {
+                        habitList.innerHTML = output;
+                        
+                        // Attach Delete Listeners
+                        document.querySelectorAll('.delete-habit-btn').forEach(btn => {
+                            btn.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                if (confirm('Are you sure you want to delete this habit?')) {
+                                    const habitId = this.getAttribute('data-id');
+                                    const dXhr = new XMLHttpRequest();
+                                    dXhr.open('DELETE', 'api/habits.php', true);
+                                    dXhr.setRequestHeader('Content-type', 'application/json');
+                                    dXhr.onload = function() {
+                                        const res = JSON.parse(this.responseText);
+                                        if (res.status === 'success') {
+                                            $(document).trigger('ajaxSuccessEvent', ['Habit deleted']);
+                                            loadHabits();
+                                        } else {
+                                            alert(res.message);
+                                        }
+                                    };
+                                    dXhr.send(JSON.stringify({id: habitId}));
+                                }
+                            });
+                        });
+                    }
                 } catch(e) {}
             }
         };

@@ -1,13 +1,21 @@
 <?php
 // api/tasks.php
+session_start();
 header('Content-Type: application/json');
 require_once 'db_connect.php';
 
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(["status" => "error", "message" => "Unauthorized"]);
+    exit;
+}
+
+$user_id = (int)$_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
-    // Fetch all tasks
-    $sql = "SELECT * FROM tasks ORDER BY created_at DESC";
+    // Fetch only tasks for the logged-in user
+    $sql = "SELECT * FROM tasks WHERE user_id = $user_id ORDER BY created_at DESC";
     $result = $conn->query($sql);
     
     $tasks = [];
@@ -19,11 +27,9 @@ if ($method === 'GET') {
     echo json_encode(["status" => "success", "data" => $tasks]);
 } 
 elseif ($method === 'POST') {
-    // Add a new task
-    // We expect JSON payload for AJAX
+    // Add a new task for the current user
     $data = json_decode(file_get_contents('php://input'), true);
     
-    // If not JSON, try standard POST
     if (!$data) {
         $data = $_POST;
     }
@@ -33,7 +39,7 @@ elseif ($method === 'POST') {
         $priority = isset($data['priority']) ? $conn->real_escape_string($data['priority']) : 'medium';
         $status = 'todo'; // default
         
-        $sql = "INSERT INTO tasks (title, priority, status) VALUES ('$title', '$priority', '$status')";
+        $sql = "INSERT INTO tasks (title, priority, status, user_id) VALUES ('$title', '$priority', '$status', $user_id)";
         
         if ($conn->query($sql) === TRUE) {
             echo json_encode(["status" => "success", "message" => "Task created successfully", "id" => $conn->insert_id]);
